@@ -7,3 +7,14 @@ build-backend = "setuptools.build_meta"
 # For smarter version schemes and other configuration options,
 # check out https://github.com/pypa/setuptools_scm
 version_scheme = "no-guess-dev"
+
+[tool.poetry]
+name = "sigaa_api"
+version = "0.1.0"
+description = "A Python package to interact with SIGAA"
+authors = ["Raphael P. Gomes <raphaelpgomes1@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+playwright = "^1.41.1"
