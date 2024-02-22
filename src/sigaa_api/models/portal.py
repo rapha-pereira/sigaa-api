@@ -1,3 +1,5 @@
+""""Module to represent the SIGAA portal and its sections."""
+
 from typing import List, Tuple, Union
 from dataclasses import dataclass, field
 
@@ -6,16 +8,9 @@ from re import search as re_search
 
 from playwright.sync_api import Locator, Page
 
+from src.sigaa_api.models.exceptions import LoginFailed
 
-@dataclass(frozen=True, slots=True)
-class StudentPortalLogin:
-    """
-    A class that represents the SIGAA login page.
-    https://sig.ifsc.edu.br/sigaa/
-    """
-
-    username: str
-    password: str
+import getpass
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,9 +58,7 @@ class Classes:
             if match:
                 course_name, course_code, course_schedule = match.group(1, 2, 3)
                 return course_name, course_code, course_schedule
-            else:
-                return None
-
+            
         return [group_courses_content(_str) for _str in body_tr_inner_texts]
 
     def get_classes_content_with_header(self) -> Union[List[dict], None]:
@@ -73,7 +66,7 @@ class Classes:
         header = self.get_normalized_header()
         content = self.get_classes_content()
         if header and content:
-            return [dict(zip(header, _tuple)) for _tuple in content]
+            return [dict(zip(header, _tuple)) for _tuple in content if _tuple]
         else:
             return None
 
@@ -110,9 +103,72 @@ class Profile:
 
     def get_photo_url(self) -> str:
         """Method to get the photo of the user."""
+        # .evaluate() is used to get the src *property* of the img tag
+        # .get_attribute() would return the attribute, that doesn't contain the base URL
         return self.div.locator(
             selector_or_locator=self._portal_photo_selector
-        ).get_attribute("src")
+        ).evaluate("el => el.src")
+
+
+@dataclass(frozen=True, slots=True)
+class StudentPortalLogin:
+    """
+    A class that represents the SIGAA login page.
+    https://sig.ifsc.edu.br/sigaa/
+    """
+
+    page: Page
+
+    _BASE_URL: str = field(default="https://sig.ifsc.edu.br/sigaa", init=False)
+    _LOGIN_URL: str = field(default="verTelaLogin.do", init=False)
+
+    _input_username_selector: str = field(
+        default="#loginForm > table > tbody > tr:nth-child(1) > td > input[type=text]",
+        init=False,
+    )
+    _input_password_selector: str = field(
+        default="#loginForm > table > tbody > tr:nth-child(2) > td > input[type=password]",
+        init=False,
+    )
+    _form_button_selector: str = field(
+        default="#loginForm > table > tfoot > tr:nth-child(2) > td > button",
+        init=False,
+    )
+
+    def login(self) -> bool:
+        """Method to login into the SIGAA portal."""
+        # Get the user credentials
+        username, password = self._get_user_credentials()
+
+        # Go to login page
+        self.page.goto(f"{self._BASE_URL}/{self._LOGIN_URL}")
+
+        # Fill the username and password inputs
+        self.page.locator(selector=self._input_username_selector).fill(value=username)
+
+        self.page.locator(selector=self._input_password_selector).fill(value=password)
+
+        # Delete the user credentials from memory
+        del username, password
+
+        # Click on the button to submit the form
+        self.page.locator(selector=self._form_button_selector).click()
+
+        # Wait until the page loads
+        resolver: None = self.page.wait_for_load_state("load")
+        if resolver is None:
+            del resolver
+            return True
+        else:
+            del resolver
+            return False
+
+    def _get_user_credentials(self) -> Tuple[str, str]:
+        """Method to get the user credentials."""
+        print("Enter your SIGAA credentials.")
+        username = input("Username: ")
+        password = getpass.getpass("Password: ")
+        return username, password
 
 
 @dataclass(frozen=True, slots=True)
@@ -124,15 +180,17 @@ class StudentPortal:
 
     page: Page
 
-    def __post_init__(self) -> None:
-        resolver: None = self.page.wait_for_load_state("load")
-        # Wait until Playwright loads the page, then init the class.
-        if resolver is None:
-            del resolver
-            pass
-
     def get_classes_portal(self) -> Classes:
         return Classes(page=self.page)
 
     def get_profile_portal(self) -> Profile:
         return Profile(page=self.page)
+
+    def login(self) -> bool:
+        """Method to login into the SIGAA portal."""
+        # Call the login method from the StudentPortalLogin class
+        login = StudentPortalLogin(page=self.page).login()
+        if not login:
+            raise LoginFailed()
+        else:
+            return True
