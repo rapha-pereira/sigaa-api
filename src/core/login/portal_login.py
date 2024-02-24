@@ -1,9 +1,9 @@
 """This module represents the student portal login process."""
 
-from src.sigaa_api.utils.http_client import HttpClient
-from src.sigaa_api.core.login.login_model import LoginModel
+from src.utils.http_client import HttpClient
+from src.core.login.login_model import LoginModel
 
-from src.sigaa_api.core.login.config import (
+from src.core.login.config import (
     RECAPTCHA_ANCHOR,
     RECAPTCHA_PAYLOAD,
     RECAPTCHA_RELOAD,

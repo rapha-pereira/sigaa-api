@@ -1,20 +1,16 @@
-[build-system]
-requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools_scm]
-# For smarter version schemes and other configuration options,
-# check out https://github.com/pypa/setuptools_scm
-version_scheme = "no-guess-dev"
-
 [tool.poetry]
-name = "sigaa_api"
+name = "sigaa-api"
 version = "0.1.0"
-description = "A Python package to interact with SIGAA"
-authors = ["Raphael P. Gomes <raphaelpgomes1@gmail.com>"]
+description = "An API to access SIGAA through HTTP Requests."
+authors = ["rapha-pereira <raphaelpgomes1@gmail.com>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-requests = "^2.31.0"
-playwright = "^1.41.1"
 selectolax = "^0.3.20"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

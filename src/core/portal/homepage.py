@@ -1,8 +1,8 @@
 """Module to represent the SIGAA portal core."""
 
-from src.sigaa_api.core.login.portal_login import PortalLogin
-from src.sigaa_api.core.login.login_model import LoginModel
-from src.sigaa_api.core.portal.classes import Classes
+from src.core.login.portal_login import PortalLogin
+from src.core.login.login_model import LoginModel
+from src.core.portal.classes import Classes
 
 
 class StudentPortal:

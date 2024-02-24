@@ -1,6 +1,6 @@
 """A module that represents the SIGAA login model"""
 
-from src.sigaa_api.core.exceptions import LoginFailed
+from src.core.exceptions import LoginFailed
 
 from selectolax.lexbor import LexborHTMLParser
 

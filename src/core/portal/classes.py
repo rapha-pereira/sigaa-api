@@ -1,6 +1,6 @@
 """This module contains the classes section of the portal."""
 
-from src.sigaa_api.utils.aux_functions import remove_newlines_and_tabs
+from src.utils.aux_functions import remove_newlines_and_tabs
 
 from dataclasses import dataclass, field
 from typing import Union, List
