@@ -1,5 +1,4 @@
 [build-system]
-# AVOID CHANGING REQUIRES: IT WILL BE UPDATED BY PYSCAFFOLD!
 requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
 build-backend = "setuptools.build_meta"
 
@@ -15,7 +14,7 @@ description = "A Python package to interact with SIGAA"
 authors = ["Raphael P. Gomes <raphaelpgomes1@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 requests = "^2.31.0"
 playwright = "^1.41.1"
 selectolax = "^0.3.20"

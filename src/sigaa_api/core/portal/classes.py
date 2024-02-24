@@ -48,7 +48,9 @@ class Classes:
                     # Handles duplicated td.info elements (local and schedule info)
                     center_selector = td.css_first("center")
                     if center_selector:
-                        schedule_content = center_selector.text_lexbor()
+                        schedule_content = center_selector.text(
+                            deep=True, separator="", strip=True
+                        )
                         schedule_content_normalized = remove_newlines_and_tabs(
                             schedule_content
                         )
@@ -56,7 +58,7 @@ class Classes:
 
                     # When there is no center tag, it means it's the local info
                     if not center_selector:
-                        return td.text()
+                        return td.text(deep=True, separator="", strip=True)
 
                 name_selector = node.css_first("td.descricao>form>a")
                 local_schedule_selector = node.css("td.info")
@@ -67,14 +69,19 @@ class Classes:
                         for td in local_schedule_selector
                         if td and local_schedule_selector
                     ]
-                    classes.append([name_selector.text(), *tds_info])
+                    classes.append(
+                        [
+                            name_selector.text(deep=True, separator="", strip=True),
+                            *tds_info,
+                        ]
+                    )
 
             return classes
 
         else:
             return None
 
-    def get_classes(self) -> Union[dict, None]:
+    def get_classes(self) -> Union[list, None]:
         """Method to get the classes table."""
         header = self.get_classes_header()
         body = self.get_classes_body()
