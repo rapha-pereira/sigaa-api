@@ -22,12 +22,17 @@ import getpass
 class PortalLogin:
     """Class to represent the login process on SIGAA."""
 
-    def __init__(self) -> None:
+    def __init__(self, username: str = "", password: str = "") -> None:
         self._http = HttpClient(base_url=SIGAA_BASE_URL)
+        # TODO: remove it
+        self.username = username
+        self.password = password
         pass
 
     def _get_user_credentials(self) -> Tuple[str, str]:
         """Get the user credentials."""
+        if self.username and self.password:
+            return self.username, self.password
         print("Enter your SIGAA credentials.")
         username = input("Username: ")
         password = getpass.getpass("Password: ")
@@ -74,7 +79,7 @@ class PortalLogin:
             "height": "1080",
             "user.login": username,
             "user.senha": password,
-            "recaptcha-token": recaptcha_token,
+            "g-recaptcha-response": recaptcha_token,
         }
         response = self._http.post(
             endpoint=SIGAA_LOGIN_FORM_URL,

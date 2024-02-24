@@ -11,14 +11,13 @@ class StudentPortal:
     https://sig.ifsc.edu.br/sigaa/portais/discente/
     """
 
-    def __init__(self) -> None:
-        self.parser = self._login().parse_response()
+    def __init__(self, username: str = "", password: str = "") -> None:
+        self.parser = self._login(username, password).parse_response()
 
-    def _login(self) -> LoginModel:
+    def _login(self, username: str = "", password: str = "") -> LoginModel:
         """Method to login into the SIGAA portal."""
-        return PortalLogin().login()
+        return PortalLogin(username=username, password=password).login()
 
     def get_classes_portal(self) -> Classes:
         """Returns an instance of the Classes class."""
         return Classes(parser=self.parser)
-
