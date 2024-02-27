@@ -1,22 +1,31 @@
-from aiohttp import ClientSession
-from fastapi import HTTPException
-from fastapi import status as http_status
+"""Module to represent the SIGAA portal core."""
+
+from fastapi.security import HTTPBasicCredentials
+
+from typing import List, Union
+
+from app.sigaa.schemas import Course
+from app.sigaa.login.portal_login import PortalLogin
+from app.sigaa.course.portal_courses import PortalCourses
 
 
-async def get_html(url: str):
-    async with ClientSession() as session:
-        async with session.get(url) as response:
-            text = await response.text()
+class StudentPortal:
+    """
+    A class that represents the SIGAA main page.
+    https://sig.ifsc.edu.br/sigaa/portais/discente/
+    """
 
-            if response.status == 200:
-                html = ""
+    def __init__(self, credentials: HTTPBasicCredentials, option: str) -> None:
+        _sigaa_login = PortalLogin(credentials=credentials).login()
+        self.parser = _sigaa_login.parse_response()
+        self.option = option
 
-                return html
+    def _get_courses(self) -> Union[List[Course], None]:
+        """Returns a list of courses the student is enrolled in."""
+        return PortalCourses(parser=self.parser).get_courses()
 
-    raise HTTPException(
-        status_code=http_status.HTTP_501_NOT_IMPLEMENTED,
-        detail=f"Scraper didn't succeed in getting data:\n"
-        f"\turl: {url}\n"
-        f"\tstatus code: {response.status}\n"
-        f"\tresponse text: {text}",
-    )
+    def handle(self) -> Union[List[Course], None]:
+        """Handle the request based on the option."""
+        if self.option == "course":
+            return self._get_courses()
+        return None

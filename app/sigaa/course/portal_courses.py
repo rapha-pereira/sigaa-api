@@ -1,29 +1,26 @@
-"""This module contains the classes section of the portal."""
+"""This module contains the courses section of the portal."""
 
-from src.utils.aux_functions import remove_newlines_and_tabs
+from app.utils import remove_newlines_and_tabs
+from app.sigaa.schemas import Course
 
-from dataclasses import dataclass, field
 from typing import Union, List
 
 from selectolax.lexbor import LexborHTMLParser, LexborNode
 
 
-@dataclass(init=True, frozen=True, slots=True)
-class Classes:
-    """
-    A class that represents the classes section of the portal.
-    """
+class PortalCourses:
+    def __init__(self, parser: LexborHTMLParser) -> None:
+        self._parser = parser
+        self._portal_selector = "#turmas-portal"
+        self._table_selector = "table:nth-child(3)"
+        self._header_selector = "thead > tr"
+        self._body_selector = "tbody > tr"
+        pass
 
-    parser: LexborHTMLParser
-    _portal_selector: str = field(default="#turmas-portal", init=False)
-    _table_selector: str = field(default="table:nth-child(3)", init=False)
-    _header_selector: str = field(default="thead > tr", init=False)
-    _body_selector: str = field(default="tbody > tr", init=False)
-
-    def get_classes_header(self) -> Union[List[str], None]:
-        """Method to get the header of the classes table."""
+    def _get_courses_header(self) -> Union[List[str], None]:
+        """Method to get the header of the courses table."""
         selector = f"{self._portal_selector} > {self._table_selector} > {self._header_selector}"
-        header_node = self.parser.css_first(selector)
+        header_node = self._parser.css_first(selector)
         if header_node:
             headers_text: list = [
                 header.text(deep=True, separator="", strip=True)
@@ -34,14 +31,14 @@ class Classes:
         else:
             return None
 
-    def get_classes_body(self) -> Union[List[str], None]:
-        """Method to get the body of the classes table."""
+    def _get_courses_body(self) -> Union[List[str], None]:
+        """Method to get the body of the courses table."""
         selector = (
             f"{self._portal_selector} > {self._table_selector} > {self._body_selector}"
         )
-        body_nodes = self.parser.css(selector)
+        body_nodes = self._parser.css(selector)
         if body_nodes:
-            classes = []
+            courses = []
             for node in body_nodes:
 
                 def _handle_td_info(td: LexborNode) -> str:
@@ -69,26 +66,27 @@ class Classes:
                         for td in local_schedule_selector
                         if td and local_schedule_selector
                     ]
-                    classes.append(
+                    courses.append(
                         [
                             name_selector.text(deep=True, separator="", strip=True),
                             *tds_info,
                         ]
                     )
 
-            return classes
+            return courses
 
         else:
             return None
 
-    def get_classes(self) -> Union[list, None]:
-        """Method to get the classes table."""
-        header = self.get_classes_header()
-        body = self.get_classes_body()
-        classes = []
-        if header and body:
-            for _, row in enumerate(body):
-                classes.append(dict(zip(header, row)))
-            return classes
+    def get_courses(self) -> Union[List[Course], None]:
+        """Method to get courses."""
+        body = self._get_courses_body()
+        courses = []
+        if body:
+            for course in body:
+                courses.append(
+                    Course(name=course[0], location=course[1], schedule=course[2])
+                )
+            return courses
         else:
             return None

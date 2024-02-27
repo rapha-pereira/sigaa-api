@@ -1,12 +1,30 @@
-"""A module to represent the login configuration constants."""
+import os
 
+from starlette.config import Config
+
+env_files = ["dev.env", "prod.env"]
+
+config = Config()
+for env_file in env_files:
+    if os.path.exists(env_file):
+        config = Config(env_file)
+
+# Base
+API_V1_PREFIX = config("API_V1_PREFIX", cast=str)
+DEBUG = config("DEBUG", cast=bool)
+PROJECT_NAME = config("PROJECT_NAME", cast=str)
+VERSION = config("VERSION", cast=str, default="1.0.0")
+
+# Scrapers settings
+SIGAA_SITE_ENTRYPOINT = config("SIGAA_SITE_ENTRYPOINT", cast=str)
+
+# Login settings
 RECAPTCHA_ANCHOR: str = "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6Lcbx1MaAAAAAHvwThwws5-sAL-VcBhlenk9L0q1&co=aHR0cHM6Ly9zaWdhYS5pZnNjLmVkdS5icjo0NDM.&hl=pt-BR&v=1kRDYC3bfA-o6-tsWzIBvp7k&size=invisible&sa=LoginUnificado&cb=6an25rsccy1a"
 RECAPTCHA_RELOAD: str = "https://www.google.com/recaptcha/api2/reload?k=6Lcbx1MaAAAAAHvwThwws5-sAL-VcBhlenk9L0q1"
 RECAPTCHA_PAYLOAD: str = "v=1kRDYC3bfA-o6-tsWzIBvp7k&reason=q&c=<token>&k=6Lcbx1MaAAAAAHvwThwws5-sAL-VcBhlenk9L0q1&co=aHR0cHM6Ly9zaWdhYS5pZnNjLmVkdS5icjo0NDM.&hl=en&size=invisible&chr=&vh=&bg="
 
-SIGAA_BASE_URL: str = "https://sig.ifsc.edu.br/sigaa/"
-SIGAA_LOGIN_URL: str = "verTelaLogin.do"
-SIGAA_LOGIN_FORM_URL: str = "logar.do?dispatch=logOn"
+SIGAA_LOGIN_ENDPOINT: str = "verTelaLogin.do"
+SIGAA_LOGIN_FORM_ENDPOINT: str = "logar.do?dispatch=logOn"
 
 SIGAA_LOGIN_FORM_HEADER: str = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",

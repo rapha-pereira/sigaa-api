@@ -2,6 +2,8 @@
 
 import requests
 
+from urllib.parse import urljoin
+
 
 class HttpClient:
     """A class for making HTTP requests."""
@@ -41,7 +43,7 @@ class HttpClient:
         Returns:
             requests.Response: The response object.
         """
-        url = f"{self.base_url}/{endpoint}"
+        url = urljoin(base=self.base_url, url=endpoint)
         session = self.session
         response = session.request(
             method,

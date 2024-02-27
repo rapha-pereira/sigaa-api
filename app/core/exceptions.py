@@ -1,11 +1,13 @@
 """Module to represent API custom exceptions."""
 
+from fastapi.exceptions import HTTPException
 
-class SIGAAException(Exception):
+
+class SIGAAException(HTTPException):
     """Base exception for the SIGAA API."""
 
     def __init__(self, message: str) -> None:
-        super().__init__(message)
+        super().__init__(status_code=400, detail=message)
 
 
 class LoginFailed(SIGAAException):
