@@ -4,7 +4,7 @@ RECAPTCHA_ANCHOR: str = "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6Lc
 RECAPTCHA_RELOAD: str = "https://www.google.com/recaptcha/api2/reload?k=6Lcbx1MaAAAAAHvwThwws5-sAL-VcBhlenk9L0q1"
 RECAPTCHA_PAYLOAD: str = "v=1kRDYC3bfA-o6-tsWzIBvp7k&reason=q&c=<token>&k=6Lcbx1MaAAAAAHvwThwws5-sAL-VcBhlenk9L0q1&co=aHR0cHM6Ly9zaWdhYS5pZnNjLmVkdS5icjo0NDM.&hl=en&size=invisible&chr=&vh=&bg="
 
-SIGAA_BASE_URL: str = "https://sig.ifsc.edu.br/sigaa"
+SIGAA_BASE_URL: str = "https://sig.ifsc.edu.br/sigaa/"
 SIGAA_LOGIN_URL: str = "verTelaLogin.do"
 SIGAA_LOGIN_FORM_URL: str = "logar.do?dispatch=logOn"
 
