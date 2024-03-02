@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Literal, Union
+from typing import List, Literal, Union, Optional
 
 from pydantic import BaseModel, HttpUrl, ConfigDict, validator
 from selectolax.lexbor import LexborHTMLParser
@@ -20,7 +20,7 @@ class SIGAALogin(BaseModel):
     @validator("response")
     def check_login(cls, response: requests.Response) -> requests.Response:
         """Validate if the login was successful."""
-        if "Usuário ou senha inválidos" in response.text:
+        if not response.ok:
             raise LoginFailed()
         return response
 
@@ -62,20 +62,20 @@ class Activitie(BaseModel):
 
 class Profile(BaseModel):
     name: str
-    email: str
     photo: HttpUrl
+    additional_info: Optional[List[str]] = None
 
     model_config = ConfigDict(
         str_to_upper=True,
         str_strip_whitespace=True,
-        extra="forbid",
+        extra="allow",
         frozen=True,
         json_schema_extra={"example": ex_profile},
     )
 
 
 class SearchQuery(BaseModel):
-    option: Literal["course", "activitie", "profile", "all"] = "all"
+    option: Literal["course", "profile_basic", "profile_additional", "all"] = "all"
 
     model_config = ConfigDict(
         extra="forbid",
@@ -86,7 +86,7 @@ class SearchQuery(BaseModel):
 class SearchResponse(BaseModel):
     status: bool = True
     message: str = "success"
-    data: Union[List[Course], List[Activitie], Profile, None] = None
+    data: Union[List[Course], List[Activitie], Profile, List, None]
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,

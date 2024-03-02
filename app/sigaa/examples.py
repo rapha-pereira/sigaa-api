@@ -12,6 +12,5 @@ ex_activities = {
 
 ex_profile = {
     "name": "JOÃO SILVA",
-    "email": "joao.s@aluno.ifsc.edu.br",
     "photo": "https://sig.ifsc.edu.br/sigaa/verFoto?idArquivo=1234aeae",
 }
