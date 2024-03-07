@@ -1,4 +1,5 @@
 """This module contains the profile section of the portal."""
+# TODO: Improve dinamic get of info from profile.
 
 from urllib.parse import urljoin
 from app.core.config import SIGAA_SITE_ENTRYPOINT
@@ -6,7 +7,7 @@ from app.sigaa.schemas import Profile
 
 from typing import Union, List
 
-from selectolax.lexbor import LexborHTMLParser
+from selectolax.lexbor import LexborHTMLParser, LexborNode
 
 
 class PortalProfile:
@@ -41,6 +42,9 @@ class PortalProfile:
 
     def _get_additional_info(self) -> Union[List[str], None]:
         """Method to get the additional info."""
+        def _get_student_id(main_node: LexborNode) -> int:
+            pass
+
         selector = f"{self._portal_selector} > {self._additional_info_selector} > {self._additional_info_table_selector}"
         additional_info_node = self._parser.css_first(selector)
         if additional_info_node:

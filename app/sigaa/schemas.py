@@ -1,5 +1,5 @@
-from datetime import datetime
-from typing import List, Literal, Union, Optional
+from datetime import datetime, date
+from typing import List, Literal, Union
 
 from pydantic import BaseModel, HttpUrl, ConfigDict, validator
 from selectolax.lexbor import LexborHTMLParser
@@ -10,7 +10,7 @@ from app.core.exceptions import LoginFailed
 import requests
 
 
-class SIGAALogin(BaseModel):
+class LoginModel(BaseModel):
     response: requests.Response
 
     def parse_response(self) -> LexborHTMLParser:
@@ -63,12 +63,24 @@ class Activitie(BaseModel):
 class Profile(BaseModel):
     name: str
     photo: HttpUrl
-    additional_info: Optional[List[str]] = None
+    student_id: int
+    degree_description: str
+    degree_type: str
+    degree_status: str
+    degree_started_at: date
+
+    @validator("degree_started_at", pre=True)
+    def parse_date(cls, value):
+        if isinstance(value, str):
+            if value.endswith("1"):
+                return date(year=value[0:4], month=1, day=1)
+            if value.endswith("2"):
+                return date(year=value[0:4], month=7, day=1)
 
     model_config = ConfigDict(
         str_to_upper=True,
         str_strip_whitespace=True,
-        extra="allow",
+        extra="forbid",
         frozen=True,
         json_schema_extra={"example": ex_profile},
     )

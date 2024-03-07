@@ -3,7 +3,7 @@
 from fastapi.security import HTTPBasicCredentials
 
 from app.sigaa.http import HttpClient
-from app.sigaa.schemas import SIGAALogin
+from app.sigaa.schemas import LoginModel
 
 from app.core.config import (
     RECAPTCHA_ANCHOR,
@@ -48,7 +48,7 @@ class PortalLogin:
         except IndexError:
             return ""
 
-    def login(self) -> SIGAALogin:
+    def login(self) -> LoginModel:
         """Login into the SIGAA portal."""
         recaptcha_token = self._generate_recaptcha()
         login_response = self._http.get(endpoint=SIGAA_LOGIN_ENDPOINT)
@@ -69,4 +69,4 @@ class PortalLogin:
             allow_redirects=True,
         )
 
-        return SIGAALogin(response=form_response)
+        return LoginModel(response=form_response)
