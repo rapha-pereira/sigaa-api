@@ -10,6 +10,6 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 COPY sigaa_api /app/sigaa_api
 
-EXPOSE 8080
+EXPOSE $PORT
 
-CMD ["uvicorn", "sigaa_api.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD uvicorn sigaa_api.main:app --host "0.0.0.0" --port "$PORT"
