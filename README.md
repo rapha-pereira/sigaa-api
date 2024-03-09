@@ -4,10 +4,10 @@
 
 ## ⭐ Accessing the API
 The API is hosted on Google Cloud Run and can be accessed through the following link:
-><https://sigaa-api-service-7tggr7zpeq-tl.a.run.app>
+><https://sigaa-api-service-7tggr7zpeq-uc.a.run.app>
 
 ## 📖 Usage
 The API has it's own generated docs on the following link:
-><https://sigaa-api-service-7tggr7zpeq-tl.a.run.app/docs>
+><https://sigaa-api-service-7tggr7zpeq-uc.a.run.app/docs>
 
-><https://sigaa-api-service-7tggr7zpeq-tl.a.run.app/redoc>
+><https://sigaa-api-service-7tggr7zpeq-uc.a.run.app/redoc>
