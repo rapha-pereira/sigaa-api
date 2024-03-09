@@ -2,10 +2,10 @@
 
 from fastapi.security import HTTPBasicCredentials
 
-from app.sigaa.http import HttpClient
-from app.sigaa.schemas import SIGAALogin
+from sigaa_api.http import HttpClient
+from sigaa_api.sigaa.schemas import SIGAALogin
 
-from app.core.config import (
+from sigaa_api.core.config import (
     RECAPTCHA_ANCHOR,
     RECAPTCHA_PAYLOAD,
     RECAPTCHA_RELOAD,

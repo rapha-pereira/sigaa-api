@@ -1,5 +1,4 @@
 import os
-
 from starlette.config import Config
 
 env_files = ["dev.env", "prod.env"]
@@ -10,13 +9,15 @@ for env_file in env_files:
         config = Config(env_file)
 
 # Base
-API_V1_PREFIX = config("API_V1_PREFIX", cast=str)
-DEBUG = config("DEBUG", cast=bool)
-PROJECT_NAME = config("PROJECT_NAME", cast=str)
+API_V1_PREFIX = config("API_V1_PREFIX", cast=str, default="/api/v1")
+DEBUG = config("DEBUG", cast=bool, default=False)
+PROJECT_NAME = config("PROJECT_NAME", cast=str, default="py_sigaa_api")
 VERSION = config("VERSION", cast=str, default="1.0.0")
 
 # Scrapers settings
-SIGAA_SITE_ENTRYPOINT = config("SIGAA_SITE_ENTRYPOINT", cast=str)
+SIGAA_SITE_ENTRYPOINT = config(
+    "SIGAA_SITE_ENTRYPOINT", cast=str, default="https://sig.ifsc.edu.br/sigaa/"
+)
 
 # Login settings
 RECAPTCHA_ANCHOR: str = "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6Lcbx1MaAAAAAHvwThwws5-sAL-VcBhlenk9L0q1&co=aHR0cHM6Ly9zaWdhYS5pZnNjLmVkdS5icjo0NDM.&hl=pt-BR&v=1kRDYC3bfA-o6-tsWzIBvp7k&size=invisible&sa=LoginUnificado&cb=6an25rsccy1a"

@@ -1,13 +1,15 @@
-from datetime import datetime
-from typing import List, Literal, Union, Optional
-
-from pydantic import BaseModel, HttpUrl, ConfigDict, validator
-from selectolax.lexbor import LexborHTMLParser
-
-from app.sigaa.examples import ex_courses, ex_activities, ex_profile
-from app.core.exceptions import LoginFailed
-
 import requests
+from datetime import datetime
+from typing import List, Optional
+from pydantic import BaseModel, HttpUrl, ConfigDict
+from selectolax.lexbor import LexborHTMLParser
+from urllib.parse import urljoin
+
+from sigaa_api.sigaa.examples import ex_courses, ex_activities, ex_profile
+from sigaa_api.core.config import (
+    SIGAA_SITE_ENTRYPOINT,
+    SIGAA_LOGIN_FORM_ENDPOINT,
+)
 
 
 class SIGAALogin(BaseModel):
@@ -17,12 +19,16 @@ class SIGAALogin(BaseModel):
         """Method to parse the response to a LexborHTMLParser object."""
         return LexborHTMLParser(self.response.text)
 
-    @validator("response")
-    def check_login(cls, response: requests.Response) -> requests.Response:
-        """Validate if the login was successful."""
-        if not response.ok:
-            raise LoginFailed()
-        return response
+    def ok(self) -> bool:
+        """Method to check if the login was successfull.\n
+        This method checks if the response URL is different from the login URL that
+        was used to login.\n
+        """
+        login_url = urljoin(SIGAA_SITE_ENTRYPOINT, SIGAA_LOGIN_FORM_ENDPOINT)
+        if self.response.url == login_url:
+            return False
+        else:
+            return True
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
@@ -45,7 +51,7 @@ class Course(BaseModel):
     )
 
 
-class Activitie(BaseModel):
+class Activity(BaseModel):
     course: Course
     title: str
     delivery_date: datetime
@@ -71,25 +77,4 @@ class Profile(BaseModel):
         extra="allow",
         frozen=True,
         json_schema_extra={"example": ex_profile},
-    )
-
-
-class SearchQuery(BaseModel):
-    option: Literal["course", "profile_basic", "profile_additional", "all"] = "all"
-
-    model_config = ConfigDict(
-        extra="forbid",
-        frozen=True,
-    )
-
-
-class SearchResponse(BaseModel):
-    status: bool = True
-    message: str = "success"
-    data: Union[List[Course], List[Activitie], Profile, List, None]
-
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        extra="forbid",
-        frozen=True,
     )

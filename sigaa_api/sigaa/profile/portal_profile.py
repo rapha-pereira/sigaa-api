@@ -1,12 +1,11 @@
 """This module contains the profile section of the portal."""
 
 from urllib.parse import urljoin
-from app.core.config import SIGAA_SITE_ENTRYPOINT
-from app.sigaa.schemas import Profile
-
 from typing import Union, List
-
 from selectolax.lexbor import LexborHTMLParser
+
+from sigaa_api.core.config import SIGAA_SITE_ENTRYPOINT
+from sigaa_api.sigaa.schemas import Profile
 
 
 class PortalProfile:

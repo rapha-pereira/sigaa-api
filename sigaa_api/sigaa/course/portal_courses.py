@@ -1,7 +1,7 @@
 """This module contains the courses section of the portal."""
 
-from app.utils import remove_newlines_and_tabs
-from app.sigaa.schemas import Course
+from sigaa_api.utils import remove_newlines_and_tabs
+from sigaa_api.sigaa.schemas import Course
 
 from typing import Union, List
 
