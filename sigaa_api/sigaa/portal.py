@@ -6,7 +6,7 @@ from fastapi import status
 
 from typing import List, Union
 
-from sigaa_api.sigaa.schemas import Course, Profile
+from sigaa_api.sigaa.models import Course, Profile
 from sigaa_api.sigaa.login.portal_login import PortalLogin
 from sigaa_api.sigaa.course.portal_courses import PortalCourses
 from sigaa_api.sigaa.profile.portal_profile import PortalProfile
@@ -35,7 +35,7 @@ class StudentPortal:
 
     def _get_profile_additional(self) -> Union[Profile, None]:
         """Returns the student profile with additional info."""
-        return PortalProfile(parser=self.parser).get_profile_with_additional_info()
+        return PortalProfile(parser=self.parser).get_profile()
 
     def login(self) -> None:
         """Login to the SIGAA portal."""

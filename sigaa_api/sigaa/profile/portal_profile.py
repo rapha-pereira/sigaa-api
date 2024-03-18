@@ -1,11 +1,23 @@
 """This module contains the profile section of the portal."""
 
 from urllib.parse import urljoin
-from typing import Union, List
-from selectolax.lexbor import LexborHTMLParser
+from typing import Optional
+from selectolax.lexbor import LexborHTMLParser, LexborNode
 
 from sigaa_api.core.config import SIGAA_SITE_ENTRYPOINT
-from sigaa_api.sigaa.schemas import Profile
+from sigaa_api.sigaa.models import AcademicIndexes, Profile, Workload
+from sigaa_api.utils import (
+    convert_semester_to_date,
+    clean_paid_workload_string,
+    remove_newlines_and_tabs,
+)
+
+
+PORTAL_SELECTOR = "#perfil-docente"
+PHOTO_SELECTOR = "div.pessoal-docente > div.foto > img"
+NAME_SELECTOR = "p.info-docente > span > small > b"
+ADDITIONAL_INFO_SELECTOR = "#agenda-docente"
+ADDITIONAL_INFO_TABLE_SELECTOR = "table > tbody"
 
 
 class PortalProfile:
@@ -18,18 +30,18 @@ class PortalProfile:
         self._additional_info_table_selector = "table > tbody"
         pass
 
-    def _get_profile_name(self) -> Union[str, None]:
+    def _get_profile_name(self) -> Optional[str]:
         """Method to get the profile name."""
-        selector = f"{self._portal_selector} > {self._name_selector}"
+        selector = f"{PORTAL_SELECTOR} > {NAME_SELECTOR}"
         name_node = self._parser.css_first(selector)
         if name_node:
             return name_node.text(deep=True, separator="", strip=True)
         else:
             return None
 
-    def _get_profile_photo(self) -> Union[str, None]:
+    def _get_profile_photo(self) -> Optional[str]:
         """Method to get the profile photo."""
-        selector = f"{self._portal_selector} > {self._photo_selector}"
+        selector = f"{PORTAL_SELECTOR} > {PHOTO_SELECTOR}"
         photo_node = self._parser.css_first(selector)
         if photo_node:
             return urljoin(
@@ -38,28 +50,97 @@ class PortalProfile:
         else:
             return None
 
-    def _get_additional_info(self) -> Union[List[str], None]:
+    def _get_profile_info(self) -> dict:
+        """Method to get profile info."""
+        node = self._parser.css_first(PORTAL_SELECTOR)
+        enrollment = node.css_first("tr:nth-child(1) > td:nth-child(2)").text()
+        course_summary = remove_newlines_and_tabs(
+            node.css_first("tr:nth-child(2) > td:nth-child(2)").text()
+        )
+        course_level = node.css_first("tr:nth-child(3) > td:nth-child(2)").text()
+        course_status = node.css_first("tr:nth-child(4) > td:nth-child(2)").text()
+        course_joined_at = node.css_first("tr:nth-child(6) > td:nth-child(2)").text()
+
+        return {
+            "enrollment_id": int(enrollment),
+            "course_summary": course_summary,
+            "course_level": course_level,
+            "course_status": course_status,
+            "course_joined_at": convert_semester_to_date(course_joined_at),
+        }
+
+    def _get_additional_info(self) -> dict:
         """Method to get the additional info."""
-        selector = f"{self._portal_selector} > {self._additional_info_selector} > {self._additional_info_table_selector}"
+        # TODO: Improve the dinamic way to get the additional info
+        selector = f"{PORTAL_SELECTOR} > {ADDITIONAL_INFO_SELECTOR} > {ADDITIONAL_INFO_TABLE_SELECTOR}"
         additional_info_node = self._parser.css_first(selector)
         if additional_info_node:
-            return [
-                info.text(deep=True, separator="", strip=True)
-                for info in additional_info_node.css("tr > td")
-                if info
-            ]
+            # AcademicIndexes
+            grades_table = self._parser.css_first(
+                f"{selector} > tr:nth-child(9) > td > table > tbody"
+            )
+            mc = grades_table.css_first(
+                "tr:nth-child(2) > td:nth-child(2) > div"
+            ).text()
+            ira = grades_table.css_first(
+                "tr:nth-child(2) > td:nth-child(4) > div"
+            ).text()
+            iech = grades_table.css_first(
+                "tr:nth-child(3) > td:nth-child(2) > div"
+            ).text()
+            iepl = grades_table.css_first(
+                "tr:nth-child(3) > td:nth-child(4) > div"
+            ).text()
+            iea = grades_table.css_first(
+                "tr:nth-child(4) > td:nth-child(2) > div"
+            ).text()
+            caa = grades_table.css_first(
+                "tr:nth-child(4) > td:nth-child(4) > div"
+            ).text()
+            # Workload
+            workload_table = self._parser.css_first(
+                "tr:nth-child(10) > td > table > tbody"
+            )
+            mandatory_workload = workload_table.css_first(
+                "tr:nth-child(1) > td:nth-child(2)"
+            ).text()
+            optional_workload = workload_table.css_first(
+                "tr:nth-child(2) > td:nth-child(2)"
+            ).text()
+            total_workload = workload_table.css_first(
+                "tr:nth-child(3) > td:nth-child(2)"
+            ).text()
+            paid_workload = clean_paid_workload_string(
+                workload_table.css_first("tr:nth-child(5) > td").text()
+            )
+            # Init models
+            academic_indexes = AcademicIndexes(
+                mc=float(mc),
+                ira=float(ira),
+                iech=float(iech),
+                iepl=float(iepl),
+                iea=float(iea),
+                caa=float(caa),
+            )
+            workload = Workload(
+                mandatory=float(mandatory_workload),
+                optional=float(optional_workload),
+                total=float(total_workload),
+                progress=float(paid_workload),
+            )
+            return {"academic_indexes": academic_indexes, "workload": workload}
         else:
             return None
 
-    def get_profile_with_basic_info(self) -> Profile:
-        """Method to get the profile basic info."""
-        name = self._get_profile_name()
-        photo = self._get_profile_photo()
-        return Profile(name=name, photo=photo)
-
-    def get_profile_with_additional_info(self) -> Profile:
+    def get_profile(self) -> Profile:
         """Method to get the profile with additional info."""
-        name = self._get_profile_name()
-        photo = self._get_profile_photo()
-        additional_info = self._get_additional_info()
-        return Profile(name=name, photo=photo, additional_info=additional_info)
+        profile_name = self._get_profile_name()
+        profile_photo = self._get_profile_photo()
+        profile_info = self._get_profile_info()
+        profile_additional_info = self._get_additional_info()
+        return Profile(
+            name=profile_name,
+            photo=profile_photo,
+            **profile_info,
+            **profile_additional_info,
+        )

@@ -1,6 +1,5 @@
 import requests
-from datetime import datetime
-from typing import List, Optional
+from datetime import datetime, date
 from pydantic import BaseModel, HttpUrl, ConfigDict
 from selectolax.lexbor import LexborHTMLParser
 from urllib.parse import urljoin
@@ -27,8 +26,7 @@ class SIGAALogin(BaseModel):
         login_url = urljoin(SIGAA_SITE_ENTRYPOINT, SIGAA_LOGIN_FORM_ENDPOINT)
         if self.response.url == login_url:
             return False
-        else:
-            return True
+        return True
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
@@ -66,10 +64,44 @@ class Activity(BaseModel):
     )
 
 
+class AcademicIndexes(BaseModel):
+    mc: float
+    ira: float
+    iech: float
+    iepl: float
+    iea: float
+    caa: float
+
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        extra="forbid",
+        frozen=True,
+    )
+
+
+class Workload(BaseModel):
+    mandatory: float
+    optional: float
+    total: float
+    progress: float
+
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        extra="forbid",
+        frozen=True,
+    )
+
+
 class Profile(BaseModel):
     name: str
     photo: HttpUrl
-    additional_info: Optional[List[str]] = None
+    enrollment_id: int
+    course_summary: str
+    course_level: str
+    course_status: str
+    course_joined_at: date
+    academic_indexes: AcademicIndexes
+    workload: Workload
 
     model_config = ConfigDict(
         str_to_upper=True,

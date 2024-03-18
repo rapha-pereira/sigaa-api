@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sigaa_api.core.exceptions import LoginFailed
 from sigaa_api.sigaa.portal import StudentPortal
-from sigaa_api.sigaa.schemas import Course, Profile, Activity
+from sigaa_api.sigaa.models import Course, Profile, Activity
 
 router = APIRouter(prefix="/student")
 security = HTTPBasic()
