@@ -2,7 +2,7 @@
 
 from urllib.parse import urljoin
 from typing import Optional
-from selectolax.lexbor import LexborHTMLParser, LexborNode
+from selectolax.lexbor import LexborHTMLParser
 
 from sigaa_api.core.config import SIGAA_SITE_ENTRYPOINT
 from sigaa_api.sigaa.models import AcademicIndexes, Profile, Workload
