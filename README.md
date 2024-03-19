@@ -11,3 +11,16 @@ The API has it's own generated docs on the following link:
 ><https://sigaa-api-service-7tggr7zpeq-uc.a.run.app/docs>
 
 ><https://sigaa-api-service-7tggr7zpeq-uc.a.run.app/redoc>
+
+## 📚 Contributing
+Contributing to this project is simple, just follow the steps below:
+1. Fork the project
+2. Create your virtual environment with: (`poetry install --no-root`)
+3. Create a new branch (`git checkout -b feature`)
+4. Test your changes with: (`make run-dev`), your server will be running on your [localhost](http://127.0.0.1:8000)
+5. Commit your changes (`git commit -m 'Add feature'`)
+6. Push to the branch (`git push origin feature`)
+7. Create a pull request :)
+
+---
+Made with ❤️ by [Raphael P. Gomes](https://github.com/rapha-pereira)
