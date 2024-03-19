@@ -13,26 +13,21 @@ from sigaa_api.utils import (
 )
 
 
-PORTAL_SELECTOR = "#perfil-docente"
-PHOTO_SELECTOR = "div.pessoal-docente > div.foto > img"
-NAME_SELECTOR = "p.info-docente > span > small > b"
-ADDITIONAL_INFO_SELECTOR = "#agenda-docente"
-ADDITIONAL_INFO_TABLE_SELECTOR = "table > tbody"
+_PORTAL_SELECTOR = "#perfil-docente"
+_PHOTO_SELECTOR = "div.pessoal-docente > div.foto > img"
+_NAME_SELECTOR = "p.info-docente > span > small > b"
+_ADDITIONAL_INFO_SELECTOR = "#agenda-docente"
+_ADDITIONAL_INFO_TABLE_SELECTOR = "table > tbody"
 
 
 class PortalProfile:
     def __init__(self, parser: LexborHTMLParser) -> None:
         self._parser = parser
-        self._portal_selector = "#perfil-docente"
-        self._photo_selector = "div.pessoal-docente > div.foto > img"
-        self._name_selector = "p.info-docente > span > small > b"
-        self._additional_info_selector = "#agenda-docente"
-        self._additional_info_table_selector = "table > tbody"
         pass
 
     def _get_profile_name(self) -> Optional[str]:
         """Method to get the profile name."""
-        selector = f"{PORTAL_SELECTOR} > {NAME_SELECTOR}"
+        selector = f"{_PORTAL_SELECTOR} > {_NAME_SELECTOR}"
         name_node = self._parser.css_first(selector)
         if name_node:
             return name_node.text(deep=True, separator="", strip=True)
@@ -41,7 +36,7 @@ class PortalProfile:
 
     def _get_profile_photo(self) -> Optional[str]:
         """Method to get the profile photo."""
-        selector = f"{PORTAL_SELECTOR} > {PHOTO_SELECTOR}"
+        selector = f"{_PORTAL_SELECTOR} > {_PHOTO_SELECTOR}"
         photo_node = self._parser.css_first(selector)
         if photo_node:
             return urljoin(
@@ -52,7 +47,7 @@ class PortalProfile:
 
     def _get_profile_info(self) -> dict:
         """Method to get profile info."""
-        node = self._parser.css_first(PORTAL_SELECTOR)
+        node = self._parser.css_first(_PORTAL_SELECTOR)
         enrollment = node.css_first("tr:nth-child(1) > td:nth-child(2)").text()
         course_summary = remove_newlines_and_tabs(
             node.css_first("tr:nth-child(2) > td:nth-child(2)").text()
@@ -72,7 +67,7 @@ class PortalProfile:
     def _get_additional_info(self) -> dict:
         """Method to get the additional info."""
         # TODO: Improve the dinamic way to get the additional info
-        selector = f"{PORTAL_SELECTOR} > {ADDITIONAL_INFO_SELECTOR} > {ADDITIONAL_INFO_TABLE_SELECTOR}"
+        selector = f"{_PORTAL_SELECTOR} > {_ADDITIONAL_INFO_SELECTOR} > {_ADDITIONAL_INFO_TABLE_SELECTOR}"
         additional_info_node = self._parser.css_first(selector)
         if additional_info_node:
             # AcademicIndexes
