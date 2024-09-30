@@ -77,7 +77,6 @@ jobs:
         with:
           project_id: 'white-rigging-372215'
           workload_identity_provider: 'projects/1021137579269/locations/global/workloadIdentityPools/github/providers/my-repo'
-          service_account: 'sigaa-sa@white-rigging-372215.iam.gserviceaccount.com'
 
       # NOTE: Alternative option - authentication via credentials json
       # - name: Google Auth
