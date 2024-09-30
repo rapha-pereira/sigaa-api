@@ -23,7 +23,7 @@ Contributing to this project is simple, just follow the steps below:
 7. Create a pull request :)
 
 ## 🔄 Future releases
-- Activities endpoint
+- Activities endpoint.
 
 ---
 Made with ❤️ by [Raphael P. Gomes](https://github.com/rapha-pereira)
