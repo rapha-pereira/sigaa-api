@@ -78,6 +78,7 @@ jobs:
           token_format: 'access_token'
           project_id: 'white-rigging-372215'
           workload_identity_provider: 'projects/1021137579269/locations/global/workloadIdentityPools/github/providers/my-repo'
+          service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'
 
       # NOTE: Alternative option - authentication via credentials json
       # - name: Google Auth
