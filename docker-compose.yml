@@ -1,0 +1,10 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    volumes:
+      - ./sigaa_api:/app/sigaa_api # monta o código fonte
+    command: uvicorn sigaa_api.main:app --host 0.0.0.0 --port 8000 --reload

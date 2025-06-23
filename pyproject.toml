@@ -1,19 +1,18 @@
-[tool.poetry]
+[project]
 name = "sigaa-api"
 version = "0.1.0"
 description = "An API to access SIGAA through HTTP Requests."
-authors = ["rapha-pereira <raphaelpgomes1@gmail.com>"]
+authors = [{ name = "rapha-pereira", email = "raphaelpgomes1@gmail.com" }]
+requires-python = "~=3.10"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-selectolax = "^0.3.20"
-requests = "^2.31.0"
-pydantic = "^2.6.2"
-fastapi = "^0.110.0"
-uvicorn = {extras = ["standard"], version = "^0.27.1"}
-
+dependencies = [
+    "selectolax>=0.3.20,<0.4",
+    "requests>=2.31.0,<3",
+    "pydantic>=2.6.2,<3",
+    "fastapi>=0.110.0,<0.111",
+    "uvicorn[standard]>=0.27.1,<0.28",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
