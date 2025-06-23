@@ -32,9 +32,6 @@ ENV PATH="/app/.venv/bin:$PATH"
 # Reset the entrypoint, don't invoke `uv`
 ENTRYPOINT []
 
-# Expose the port (using ARG to make it configurable)
-ARG PORT=8080
-ENV PORT=$PORT
 EXPOSE $PORT
 
 # Run the SIGAA API application
