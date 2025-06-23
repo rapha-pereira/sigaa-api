@@ -33,7 +33,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 ENTRYPOINT []
 
 # Expose the port (using ARG to make it configurable)
-ARG PORT=8000
+ARG PORT=8080
 ENV PORT=$PORT
 EXPOSE $PORT
 

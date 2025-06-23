@@ -41,7 +41,7 @@ class PortalCourses:
             courses = []
             for node in body_nodes:
 
-                def _handle_td_info(td: LexborNode) -> str:
+                def _handle_td_info(td: LexborNode) -> str: # type: ignore
                     # Handles duplicated td.info elements (local and schedule info)
                     center_selector = td.css_first("center")
                     if center_selector:
