@@ -1,3 +1,7 @@
+## ⚠️ Discontinued project (read-only repo.)
+**This repository was archived after Cloudflare Turnstile was implemented in SIGAA, making it difficult to scrape the website.**
+
+
 # **sigaa_api**
 #### The SIGAA API is a RESTful API that allows you to access the SIGAA platform through HTTP requests, returning the data as a JSON.
 #### This API was developed using Python and FastAPI, and it is hosted on Google Cloud Run.
